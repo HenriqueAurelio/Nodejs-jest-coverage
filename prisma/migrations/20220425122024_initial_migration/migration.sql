@@ -1,22 +1,6 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Authentication` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 BEGIN TRY
 
 BEGIN TRAN;
-
--- DropForeignKey
-ALTER TABLE [dbo].[User] DROP CONSTRAINT [User_authenticationId_fkey];
-
--- DropTable
-DROP TABLE [dbo].[Authentication];
-
--- DropTable
-DROP TABLE [dbo].[User];
 
 -- CreateTable
 CREATE TABLE [dbo].[users] (
@@ -43,7 +27,7 @@ CREATE TABLE [dbo].[authentications] (
 );
 
 -- AddForeignKey
-ALTER TABLE [dbo].[users] ADD CONSTRAINT [users_authenticationId_fkey] FOREIGN KEY ([authenticationId]) REFERENCES [dbo].[authentications]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE [dbo].[users] ADD CONSTRAINT [users_authenticationId_fkey] FOREIGN KEY ([authenticationId]) REFERENCES [dbo].[authentications]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
 
 COMMIT TRAN;
 

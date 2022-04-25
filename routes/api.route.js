@@ -71,7 +71,15 @@ router.put('/users/:id', async (request, response, next) => {
 });
 
 router.delete('/users/:id', async (request, response, next) => {
-  res.send({ message: 'Ok api is working 🚀' });
+  try {
+    const { id } = request.params;
+    await prisma.user.delete({
+      where: { id },
+    });
+    response.status(200).json({ message: 'The user was deleted successfully' });
+  } catch (error) {
+    response.status(404).json({ error: 'User not found with this id' });
+  }
 });
 
 module.exports = router;
