@@ -14,24 +14,7 @@ router.get('/users', async (request, response, next) => {
 
 router.get('/users/:id', userController.show);
 
-router.post('/users', async (request, response, next) => {
-  try {
-    const { name, lastname, email, phone, birth, authenticationId } = request.body;
-    const user = await prisma.user.create({
-      data: {
-        name,
-        lastname,
-        email,
-        phone,
-        birth,
-        authenticationId,
-      },
-    });
-    response.json(user);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/users', userController.store);
 
 router.put('/users/:id', async (request, response, next) => {
   try {

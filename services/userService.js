@@ -6,14 +6,15 @@ class userService {
     return response.status(200).json(users);
   }
 
-  async show(request, response) {
+  async show(request) {
     const { id } = request.params;
     const user = await userRepository.findById(id);
     return user;
   }
-  async store(request, response) {
-    const user = await userRepository.create(request.body);
-    return response.status(200).json({ user });
+  async store(request) {
+    const user = await userRepository.store(request.body);
+    if (user) return user;
+    throw new Error({ error: 'Couldnt create the user' });
   }
   async update(request, response) {
     const { id } = response.params;
