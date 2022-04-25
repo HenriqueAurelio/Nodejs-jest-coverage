@@ -9,9 +9,7 @@ class userRepository {
 
   async store(userRequest) {
     const user = await prisma.user.create({
-      data: {
-        userRequest,
-      },
+      data: userRequest,
     });
     return user;
   }
