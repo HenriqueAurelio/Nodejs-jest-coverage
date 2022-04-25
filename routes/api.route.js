@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-
+const userController = require('../controllers/userController');
 const prisma = new PrismaClient();
 
 router.get('/users', async (request, response, next) => {
@@ -12,22 +12,7 @@ router.get('/users', async (request, response, next) => {
   }
 });
 
-router.get('/users/:id', async (request, response, next) => {
-  try {
-    const { id } = request.params;
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: { authentication: true },
-    });
-    if (user) {
-      response.json(user);
-      return;
-    }
-    response.status(400).json({ error: 'User not found' });
-  } catch (error) {
-    next(error);
-  }
-});
+router.get('/users/:id', userController.show);
 
 router.post('/users', async (request, response, next) => {
   try {

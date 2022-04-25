@@ -9,7 +9,7 @@ class userService {
   async show(request, response) {
     const { id } = request.params;
     const user = await userRepository.findById(id);
-    return response.status(200).json({ user });
+    return user;
   }
   async store(request, response) {
     const user = await userRepository.create(request.body);

@@ -1,3 +1,6 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 class userRepository {
   async listAll() {
     const users = await prisma.user.findMany({ include: { authentication: true } });
@@ -38,3 +41,5 @@ class userRepository {
     });
   }
 }
+
+module.exports = new userRepository();
