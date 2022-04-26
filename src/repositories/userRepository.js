@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 class userRepository {
-  async listAll() {
+  async index() {
     const users = await prisma.user.findMany({ include: { authentication: true } });
     return users;
   }
@@ -14,7 +14,7 @@ class userRepository {
     return user;
   }
 
-  async findById(id) {
+  async show(id) {
     const user = await prisma.user.findUnique({
       where: { id },
       include: { authentication: true },

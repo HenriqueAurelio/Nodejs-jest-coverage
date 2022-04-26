@@ -1,16 +1,10 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const userController = require('../controllers/userController');
 const prisma = new PrismaClient();
 
-router.get('/users', async (request, response, next) => {
-  try {
-    const users = await prisma.user.findMany({ include: { authentication: true } });
-    response.json(users);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get('/users', userController.index);
 
 router.get('/users/:id', userController.show);
 
@@ -37,16 +31,6 @@ router.put('/users/:id', async (request, response, next) => {
   } catch (error) {}
 });
 
-router.delete('/users/:id', async (request, response, next) => {
-  try {
-    const { id } = request.params;
-    await prisma.user.delete({
-      where: { id },
-    });
-    response.status(200).json({ message: 'The user was deleted successfully' });
-  } catch (error) {
-    response.status(404).json({ error: 'User not found with this id' });
-  }
-});
+router.delete('/users/:id', userController.delete);
 
 module.exports = router;
