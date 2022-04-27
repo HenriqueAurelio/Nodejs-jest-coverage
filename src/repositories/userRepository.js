@@ -28,7 +28,7 @@ class userRepository {
   async update(id, userRequest) {
     const user = await prisma.user.update({
       where: { id },
-      data: { userRequest, lastname, email, phone, birth, authenticationId },
+      data: userRequest,
       include: { authentication: true },
     });
     return user;

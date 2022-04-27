@@ -27,7 +27,7 @@ model User {
 model Authentication {
     id String @id @default(cuid())
     password String
-    status Boolean
+    status Boolean  @default(true)
     user User?
     createdAt DateTime @default(now())
 

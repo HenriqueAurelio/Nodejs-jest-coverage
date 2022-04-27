@@ -21,7 +21,7 @@ CREATE TABLE [dbo].[users] (
 CREATE TABLE [dbo].[authentications] (
     [id] NVARCHAR(1000) NOT NULL,
     [password] NVARCHAR(1000) NOT NULL,
-    [Status] BIT NOT NULL,
+    [status] BIT NOT NULL CONSTRAINT [authentications_status_df] DEFAULT 1,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [authentications_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT [authentications_pkey] PRIMARY KEY ([id])
 );

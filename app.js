@@ -1,29 +1,23 @@
 const express = require('express');
-const createError = require('http-errors');
-const morgan = require('morgan');
+require('express-async-errors');
+// const createError = require('http-errors');
+// const morgan = require('morgan');
+
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+// app.use(morgan('dev'));
 
-app.get('/', async (req, res, next) => {
-  res.send({ message: 'Awesome it works 🐻' });
-});
+app.use('/', require('./src/routes/routes'));
 
-app.use('/', require('./src/routes/api.route'));
-
-app.use((req, res, next) => {
-  next(createError.NotFound());
-});
-
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.send({
-    status: err.status || 500,
-    message: err.message,
+app.use((error, request, response, next) => {
+  response.status(error.statusCode).json({
+    statusCode: error.statusCode,
+    message: error.message,
   });
+  return next();
 });
 
 const PORT = process.env.PORT || 3000;
