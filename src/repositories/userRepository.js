@@ -25,6 +25,10 @@ class userRepository {
     const userExists = await prisma.user.findUnique({ where: { email } });
     return userExists;
   }
+  async findById(id) {
+    const userExists = await prisma.user.findUnique({ where: { id } });
+    return userExists;
+  }
   async update(id, userRequest) {
     const user = await prisma.user.update({
       where: { id },
@@ -34,9 +38,7 @@ class userRepository {
     return user;
   }
   async delete(id) {
-    await prisma.user.delete({
-      where: { id },
-    });
+    await prisma.user.delete({where: { id }});
   }
 }
 

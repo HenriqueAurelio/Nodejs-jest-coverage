@@ -1,4 +1,5 @@
 const userService = require('../services/userService');
+const messages = require('../constants/messages')
 class userController {
   async index(request, response) {
     const users = await userService.index(request, response);
@@ -11,17 +12,17 @@ class userController {
   }
   async store(request, response) {
     const user = await userService.store(request);
-    return response.status(201).json(user);
+    return response.status(201).json({message:messages.userCreatedSuccessfully,user});
   }
   async update(request, response) {
     const user = await userService.update(request);
-    return response.status(200).json(user);
+    return response.status(200).json({ message: messages.userUpdatedSuccessfully, user });
   }
   async delete(request, response) {
     await userService.delete(request);
     return response
       .status(200)
-      .json({ message: 'Usuário foi deletado com sucesso' });
+      .json({ message: messages.userDeletedSuccessfully });
   }
 }
 
