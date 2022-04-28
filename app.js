@@ -1,25 +1,68 @@
-const express = require('express');
-require('express-async-errors');
-// const createError = require('http-errors');
-// const morgan = require('morgan');
+const PORT = process.env.PORT || 3000;
+const app = require('./src/server/server')
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 
-require('dotenv').config();
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-// app.use(morgan('dev'));
 
-app.use('/', require('./src/routes/routes'));
+const swaggerOptions = { 
+  swaggerDefinition: {
+    info: {
+      title: 'Press Star API',
+      version: '1.0.0'
+    }
+  },
+  apis:['app.js']
+}
 
-app.use((error, request, response, next) => {
-  console.log(error)
-  response.status(error.statusCode).json({
-    statusCode: error.statusCode,
-    message: error.message,
-  });
-  return next();
+const swaggerDocs = swaggerJsDoc(swaggerOptions)
+app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerDocs))
+app.listen(PORT, () => {
+  console.log(`🚀 @ http://localhost:${PORT}`)
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`));
+
+
+
+
+
+
+/**
+ *  @swagger
+ *  /users:
+ *    get:
+ *       description: Get All users
+ *       responses:
+ *          200:
+ *             description: Success
+ *
+ *    post:
+ *     description: Create a user
+ *     tags: [Users]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *      - name: name
+ *        description: name of the user
+ *        in: formData
+ *        required: true
+ *        type: string
+ * 
+ *      - lastname: lastname
+ *        description: lastname of the user
+ *        in: formData
+ *        required: true
+ *        type: string
+ * 
+ *      - name: birth
+ *        description: birth of the user
+ *        in: formData
+ *        required: true
+ *        type: DateTime
+ *     responses:
+ *       201:
+ *         description: Created
+ *         schema:
+ *           type: object
+ *           $ref: '#/definitions/users'
+ */

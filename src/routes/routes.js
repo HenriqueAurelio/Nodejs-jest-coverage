@@ -10,6 +10,9 @@ const userController = require('../controllers/userController');
 
 // router.get('/users/:id', resolver(userController.show));
 
+router.get('/', (request, response) => {
+    response.send({message:"Rota para usuários /users e documentação da api /api-docs"})
+})
 router.get('/users', userController.index);
 
 router.get('/users/:id', userController.show);
