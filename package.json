@@ -19,7 +19,8 @@
     "express-async-handler": "^1.2.0",
     "supertest": "^6.2.3",
     "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.3.0"
+    "swagger-ui-express": "^4.3.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "jest": "^28.0.2",

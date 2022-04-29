@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../data/prisma');
 
 class userRepository {
   async index() {
@@ -38,7 +37,7 @@ class userRepository {
     return user;
   }
   async delete(id) {
-    await prisma.user.delete({where: { id }});
+    await prisma.user.delete({ where: { id } });
   }
 }
 
