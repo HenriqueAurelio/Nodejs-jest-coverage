@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest"
+    "test": "jest",
+    "db:migrate": "yarn prisma migrate dev --preview-feature"
   },
   "keywords": [],
   "author": "",

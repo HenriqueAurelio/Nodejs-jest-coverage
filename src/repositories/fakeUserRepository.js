@@ -14,13 +14,11 @@ class fakeUserRepository {
   //     return user;
   //   }
 
-  //   async show(id) {
-  //     const user = await prisma.user.findUnique({
-  //       where: { id },
-  //       include: { authentication: true },
-  //     });
-  //     return user;
-  //   }
+  async show(id)
+  {
+    const user = users.find((user) => user.id ===id)
+    return user;
+  }
   //   async findByEmail(email) {
   //     const userExists = await prisma.user.findUnique({ where: { email } });
   //     return userExists;

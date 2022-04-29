@@ -2,13 +2,26 @@ const prisma = require('../data/prisma');
 
 class userRepository {
   async index() {
-    const users = await prisma.user.findMany({ include: { authentication: true } });
+    const users = await prisma.user.findMany();
     return users;
   }
 
   async store(userRequest) {
+    const {name,lastname,birth,phone,email,status,password} = userRequest
     const user = await prisma.user.create({
-      data: userRequest,
+      data: {
+        name,
+        lastname,
+        birth,
+        phone,
+        email,
+        Authentication: {
+          create: {
+            status,
+            password,
+          }
+        }
+      }
     });
     return user;
   }
