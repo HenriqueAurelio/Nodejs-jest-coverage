@@ -19,24 +19,31 @@ class fakeUserRepository {
     const user = users.find((user) => user.id ===id)
     return user;
   }
-  //   async findByEmail(email) {
-  //     const userExists = await prisma.user.findUnique({ where: { email } });
-  //     return userExists;
-  //   }
-  //   async findById(id) {
-  //     const userExists = await prisma.user.findUnique({ where: { id } });
-  //     return userExists;
-  //   }
-  //   async update(id, userRequest) {
-  //     const user = await prisma.user.update({
-  //       where: { id },
-  //       data: userRequest,
-  //       include: { authentication: true },
-  //     });
-  //     return user;
-  //   }
-  //   async delete(id) {
-  //     await prisma.user.delete({ where: { id } });
-  //   }
+
+  async findByEmail(email) {
+    const user = users.find((user) => user.email === email)
+    return user;
+  }
+
+  async findById(id) {
+     const user = users.find((user) => user.id ===id)
+    return user;
+  }
+  async update(id, userRequest) {
+
+    const {name,lastname,phone,email,birth,password,status} = userRequest
+      users = users.map((user) => {
+        if (user.id === id) return { ...user, name,lastname,phone,email,birth }
+        return user
+      })
+    return users.find(x=>x.id==id)
+    }
+    async delete(id) {
+      const indexOfUser = arr.findIndex(user => {
+        return user.id === id;
+      });
+      users.splice(indexOfUser, 1);
+      return users;
+    }
 }
 module.exports = new fakeUserRepository();

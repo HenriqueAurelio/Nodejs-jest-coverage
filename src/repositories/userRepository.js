@@ -7,7 +7,7 @@ class userRepository {
   }
 
   async store(userRequest) {
-    const {name,lastname,birth,phone,email,status,password} = userRequest
+    const { name, lastname, birth, phone, email, status, password } = userRequest
     const user = await prisma.user.create({
       data: {
         name,
@@ -15,7 +15,7 @@ class userRepository {
         birth,
         phone,
         email,
-        Authentication: {
+        authentication: {
           create: {
             status,
             password,
