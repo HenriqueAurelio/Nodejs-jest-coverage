@@ -31,12 +31,14 @@ describe('User routes ', () => {
     const res = await fakeUserRepository.update(users[0].id, user);
     expect(res.name).not.toBe(userToBeUpdated.name);
     expect(res.email).not.toBe(userToBeUpdated.email);
-    expect(res.name).not.toBe(userToBeUpdated.name);
+    expect(res.name).toBe(user.name);
     expect(res.lastname).not.toBe(userToBeUpdated.lastname);
   });
   it('should delete a user', async () => {
     const users = await fakeUserRepository.index();
-    const res = await fakeUserRepository.delete(users[0].id);
-  
+    const userToBeDeleted = users[0];
+    const res = await fakeUserRepository.delete(userToBeDeleted.id);
+    const user = await fakeUserRepository.findById(userToBeDeleted.id);
+    expect(user).toBeUndefined();
   })
 });

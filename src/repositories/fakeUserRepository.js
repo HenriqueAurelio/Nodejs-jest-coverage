@@ -1,6 +1,7 @@
 var users = require('../mock/users');
 var authentications = require('../mock/authentications');
-
+const customError = require('../middlewares/customError');
+const messages = require('../constants/messages')
 class fakeUserRepository {
   async index() {
     const listOfUsers = users;
@@ -26,7 +27,7 @@ class fakeUserRepository {
   }
 
   async findById(id) {
-     const user = users.find((user) => user.id ===id)
+    const user = users.find((user) => user.id === id)
     return user;
   }
   async update(id, userRequest) {
@@ -39,7 +40,7 @@ class fakeUserRepository {
     return users.find(x=>x.id==id)
     }
     async delete(id) {
-      const indexOfUser = arr.findIndex(user => {
+      const indexOfUser = users.findIndex(user => {
         return user.id === id;
       });
       users.splice(indexOfUser, 1);
