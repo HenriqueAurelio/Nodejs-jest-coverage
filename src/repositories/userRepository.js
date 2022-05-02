@@ -5,9 +5,16 @@ class userRepository {
     const users = await prisma.user.findMany();
     return users;
   }
-
+  async login(userRequest) {
+    const { email, password } = userRequest;
+    const user = await prisma.user.findUnique({
+      where: { email, password },
+      include: { authentication: true },
+    });
+    return user;
+  }
   async store(userRequest) {
-    const { name, lastname, birth, phone, email, status, password } = userRequest
+    const { name, lastname, birth, phone, email, status, password } = userRequest;
     const user = await prisma.user.create({
       data: {
         name,
@@ -19,9 +26,9 @@ class userRepository {
           create: {
             status,
             password,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     return user;
   }
