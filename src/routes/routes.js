@@ -11,7 +11,7 @@ router.get('/', (request, response) => {
 });
 
 router.post('/auth', loginController.authenticate);
-// router.use(authenticate);
+router.use(authenticate);
 
 router.get('/users', userController.index);
 

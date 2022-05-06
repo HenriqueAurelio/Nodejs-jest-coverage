@@ -7,7 +7,8 @@ const messages = {
   userEmailInUse: 'E-mail já foi usado na criação de usuário',
   userDeleteError: 'Não foi possível deletar o usuário',
   wrongCredentials: 'Credenciais erradas',
-  rightCredentials: 'Logado com sucesso'
+  rightCredentials: 'Logado com sucesso',
+  notAuthorized: 'Não autorizado',
 };
 
 module.exports = messages;

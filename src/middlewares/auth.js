@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
+const customError = require('../middlewares/customError');
+const messages = require('../constants/messages');
 
 function auth(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.sendStatus(401);
+    throw new customError(messages.notAuthorized, 401);
   }
   const token = authorization.replace('Bearer', '').trim();
 
@@ -14,7 +16,7 @@ function auth(req, res, next) {
     req.userId = id;
     return next();
   } catch {
-    return res.sendStatus(401);
+    throw new customError(messages.notAuthorized, 401);
   }
 }
 module.exports = auth;
