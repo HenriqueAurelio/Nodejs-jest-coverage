@@ -3,6 +3,7 @@ const app = require('../../server/server');
 const prisma = require('../../data/prisma');
 const uuid = require('uuid');
 const messages = require('../../constants/messages');
+const customError = require('../../middlewares/customError');
 
 const user = {
   id: uuid.v4(),
@@ -50,11 +51,9 @@ describe('User routes ', () => {
     expect(res.body.email).toBe(userToBeFound.email);
   });
 
-  it.only('shouldnt find a user', async () => {
-    let wrongId = (Math.random() + 1).toString(36).substring(7);
-    const res = await request(app).get(`/users/${wrongId}`);
+  it('shouldnt find a user', async () => {
+    const res = await request(app).get(`/users/user_id`);
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
-    // expect(res.error).toBeInstanceOf('customError');
   });
 });

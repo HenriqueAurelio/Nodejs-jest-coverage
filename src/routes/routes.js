@@ -11,14 +11,15 @@ router.get('/', (request, response) => {
 });
 
 router.post('/auth', loginController.authenticate);
+// router.use(authenticate);
 
-router.get('/users', authenticate, userController.index);
+router.get('/users', userController.index);
 
 router.get('/users/:id', userController.show);
 
-router.post('/users', authenticate, userController.store);
+router.post('/users', userController.store);
 
-router.put('/users/:id', authenticate, userController.update);
+router.put('/users/:id', userController.update);
 
-router.delete('/users/:id', authenticate, userController.delete);
+router.delete('/users/:id', userController.delete);
 module.exports = router;
