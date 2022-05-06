@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../../server/server');
 const prisma = require('../../data/prisma');
 const uuid = require('uuid');
+const messages = require('../../constants/messages');
 
 const user = {
   id: uuid.v4(),
@@ -47,5 +48,13 @@ describe('User routes ', () => {
     expect(res.body.lastname).toBe(userToBeFound.lastname);
     expect(res.body.phone).toBe(userToBeFound.phone);
     expect(res.body.email).toBe(userToBeFound.email);
+  });
+
+  it.only('shouldnt find a user', async () => {
+    let wrongId = (Math.random() + 1).toString(36).substring(7);
+    const res = await request(app).get(`/users/${wrongId}`);
+    expect(res.statusCode).toBe(404);
+    expect(res.body.message).toBe(messages.userIdInvalid);
+    // expect(res.error).toBeInstanceOf('customError');
   });
 });

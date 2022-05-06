@@ -4,7 +4,6 @@ const userController = require('../controllers/userController');
 const loginController = require('../controllers/loginController');
 const authenticate = require('../middlewares/auth');
 
-
 router.get('/', (request, response) => {
   response.send({
     message: 'Rota para usuários /users e documentação da api /api-docs',
@@ -13,13 +12,13 @@ router.get('/', (request, response) => {
 
 router.post('/auth', loginController.authenticate);
 
-router.get('/users', authenticate,userController.index);
+router.get('/users', authenticate, userController.index);
 
-router.get('/users/:id', authenticate,userController.show);
+router.get('/users/:id', userController.show);
 
-router.post('/users', authenticate,userController.store);
+router.post('/users', authenticate, userController.store);
 
 router.put('/users/:id', authenticate, userController.update);
 
-router.delete('/users/:id', authenticate,userController.delete);
+router.delete('/users/:id', authenticate, userController.delete);
 module.exports = router;
