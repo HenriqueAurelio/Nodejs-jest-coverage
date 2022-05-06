@@ -1,20 +1,56 @@
 const prisma = require('../data/prisma');
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 class userRepository {
+
+  async authenticate(request) {
+
+    const { email, password } = request
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      }
+    })
+     const authentication = await prisma.authentication.findUnique({
+      where: {
+        id: user.authenticationId
+      }
+    })
+
+
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+
+      return ({user,authentication,token})
+  }
+ 
+
   async index() {
     const users = await prisma.user.findMany();
     return users;
   }
-  async login(userRequest) {
-    const { email, password } = userRequest;
-    const user = await prisma.user.findUnique({
-      where: { email, password },
-      include: { authentication: true },
-    });
+  async login(request) {
+    const { email, password } = request;
+
+    const authenticationId = await prisma.authentication.findMany({ where: { password } });
+    console.log(authenticationId)
+    const user = await prisma.user.findMany({
+      where: {
+        email,
+        authentication: {
+        is:{
+            password: password
+          }
+        }
+      }
+      //   include: { authentication: true },
+      // });
+    })
     return user;
   }
-  async store(userRequest) {
-    const { name, lastname, birth, phone, email, status, password } = userRequest;
+  async store(request) {
+    const { name, lastname, birth, phone, email, status, password } = request;
+    let hashedPassword = bcrypt.hashSync(password,10)
     const user = await prisma.user.create({
       data: {
         name,
@@ -25,7 +61,7 @@ class userRepository {
         authentication: {
           create: {
             status,
-            password,
+            password:hashedPassword,
           },
         },
       },
@@ -48,10 +84,25 @@ class userRepository {
     const userExists = await prisma.user.findUnique({ where: { id } });
     return userExists;
   }
-  async update(id, userRequest) {
+  async update(id, request) {
+    const { name, lastname, birth, phone, email, status, password } = request;
+    let hashedPassword = bcrypt.hashSync(password,10)
+
     const user = await prisma.user.update({
       where: { id },
-      data: userRequest,
+      data: {
+        name,
+        lastname,
+        birth,
+        phone,
+        email,
+        authentication: {
+          create: {
+            status,
+            password:hashedPassword,
+          },
+        },
+      },
       include: { authentication: true },
     });
     return user;
