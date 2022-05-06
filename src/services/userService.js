@@ -15,6 +15,7 @@ class userService {
 
     throw new customError(messages.userIdInvalid, 404);
   }
+
   async store(request) {
     const user = await userRepository.store(request.body);
 
@@ -22,6 +23,7 @@ class userService {
 
     throw new customError(messages.userCreateError, 500);
   }
+
   async update(request) {
     const { id } = request.params;
     const userEmailInUse = await userRepository.findByEmail(request.body.email);
@@ -35,6 +37,7 @@ class userService {
 
     throw new customError(messages.userIdInvalid, 404);
   }
+  
   async delete(request) {
     const { id } = request.params;
     const userToBeDeleted = await userRepository.findById(id);

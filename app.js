@@ -3,12 +3,12 @@ const app = require('./src/server/server')
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
-
+const HOST = '0.0.0.0'
 
 const swaggerOptions = { 
   swaggerDefinition: {
     info: {
-      title: 'Press Star API',
+      title: 'Press Start API',
       version: '1.0.0'
     }
   },
@@ -17,7 +17,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerDocs))
-app.listen(PORT, () => {
+app.listen(PORT, HOST,() => {
   console.log(`🚀 @ http://localhost:${PORT}`)
 });
 
@@ -31,6 +31,7 @@ app.listen(PORT, () => {
  *  @swagger
  *  /users:
  *    get:
+ *       tags: [Users]
  *       description: Get All users
  *       responses:
  *          200:

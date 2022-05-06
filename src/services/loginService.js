@@ -4,12 +4,6 @@ const messages = require('../constants/messages');
 const bcrypt = require('bcryptjs')
 
 class loginService {
-  async login(request) {
-    const user = await userRepository.login(request.body);
-    if (user) return user;
-    throw new customError(messages.wrongCredentials, 404);
-  }
-
   async authenticate(request) {
     const data = await userRepository.authenticate(request.body);
     const isValidPassword = await bcrypt.compare(request.body.password, data.authentication.password);

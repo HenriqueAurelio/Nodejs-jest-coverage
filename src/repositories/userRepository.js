@@ -16,11 +16,7 @@ class userRepository {
         id: user.authenticationId
       }
     })
-
-
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-
       return ({user,authentication,token})
   }
  
@@ -29,25 +25,7 @@ class userRepository {
     const users = await prisma.user.findMany();
     return users;
   }
-  async login(request) {
-    const { email, password } = request;
 
-    const authenticationId = await prisma.authentication.findMany({ where: { password } });
-    console.log(authenticationId)
-    const user = await prisma.user.findMany({
-      where: {
-        email,
-        authentication: {
-        is:{
-            password: password
-          }
-        }
-      }
-      //   include: { authentication: true },
-      // });
-    })
-    return user;
-  }
   async store(request) {
     const { name, lastname, birth, phone, email, status, password } = request;
     let hashedPassword = bcrypt.hashSync(password,10)
@@ -76,14 +54,17 @@ class userRepository {
     });
     return user;
   }
+
   async findByEmail(email) {
     const userExists = await prisma.user.findUnique({ where: { email } });
     return userExists;
   }
+
   async findById(id) {
     const userExists = await prisma.user.findUnique({ where: { id } });
     return userExists;
   }
+
   async update(id, request) {
     const { name, lastname, birth, phone, email, status, password } = request;
     let hashedPassword = bcrypt.hashSync(password,10)
@@ -107,6 +88,7 @@ class userRepository {
     });
     return user;
   }
+
   async delete(id) {
     await prisma.user.delete({ where: { id } });
   }

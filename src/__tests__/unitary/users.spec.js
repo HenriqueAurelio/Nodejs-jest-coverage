@@ -19,11 +19,13 @@ describe('User routes ', () => {
     const res = await fakeUserRepository.show(users[0].id);
     expect(res).toBeTruthy();
   });
+
   it('should get a user by email', async () => {
     const users = await fakeUserRepository.index();
     const res = await fakeUserRepository.findByEmail(users[0].email);
     expect(res).toBeTruthy();
   });
+
   it('should update a user', async () => {
     const users = await fakeUserRepository.index();
     const userToBeUpdated = users[0];
@@ -33,6 +35,7 @@ describe('User routes ', () => {
     expect(res.name).toBe(user.name);
     expect(res.lastname).not.toBe(userToBeUpdated.lastname);
   });
+
   it('should create a user', async () => {
     const users = await fakeUserRepository.index();
     const lastUser = users[users.length - 1];
@@ -49,4 +52,5 @@ describe('User routes ', () => {
     const user = await fakeUserRepository.findById(userToBeDeleted.id);
     expect(user).toBeUndefined();
   });
+  
 });
