@@ -6,6 +6,7 @@ class userRepository {
   async authenticate(request) {
 
     const { email, password } = request
+    console.log(email)
     const user = await prisma.user.findUnique({
       where: {
         email,

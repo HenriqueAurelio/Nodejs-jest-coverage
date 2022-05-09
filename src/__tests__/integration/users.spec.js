@@ -3,7 +3,7 @@ const app = require('../../server/server');
 const prisma = require('../../data/prisma');
 const uuid = require('uuid');
 const messages = require('../../constants/messages');
-const customError = require('../../middlewares/customError');
+const { exec } = require("child_process");
 
 const user = {
   id: uuid.v4(),
@@ -16,6 +16,13 @@ const user = {
   status: true,
 };
 
+const admin = {
+  email: "admin@gmail.com",
+  password:"admin"
+}
+
+
+
 describe('Test app server ', () => {
   it('should get main route', async () => {
     const res = await request(app).get('/');
@@ -27,10 +34,13 @@ describe('Test app server ', () => {
 describe('User routes ', () => {
   beforeAll(async () => {
     await prisma.user.deleteMany({});
+    exec("yarn seed");
   });
-  it('should get users', async () => {
-    const res = await request(app).get('/users');
-    expect(res.statusCode).toEqual(200);
+  it.only('should get users', async () => {
+    const authorized = await request(app).post('/auth').send(admin)
+    console.log(authorized.body)
+    // const res = await request(app).get('/users');
+    // expect(res.statusCode).toEqual(200);
   });
 
   it('should create a user', async () => {

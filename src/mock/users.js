@@ -1,4 +1,6 @@
 const uuid = require('uuid')
+const authentications = require('./authentications')
+let authenticationIds = authentications.map(auth => auth.id);
 const users = [
   {
     id: uuid.v4(),
@@ -8,6 +10,7 @@ const users = [
     email: 'henrique@gmail.com',
     birth: new Date(),
     createdAt: new Date(),
+    authenticationId:authenticationIds[0]
   },
   {
     id: uuid.v4(),
@@ -17,6 +20,17 @@ const users = [
     email: 'erick@gmail.com',
     birth: new Date(),
     createdAt: new Date(),
+    authenticationId:authenticationIds[1]
+  },
+  {
+    id: uuid.v4(),
+    name: 'Admin',
+    lastname: 'Master',
+    phone: '3232514364',
+    email: 'admin@gmail.com',
+    birth: new Date(),
+    createdAt: new Date(),
+    authenticationId:authenticationIds[2]
   },
 ];
 
