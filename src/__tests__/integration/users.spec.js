@@ -32,16 +32,14 @@ describe('Test app server ', () => {
 });
 
 describe('User routes ', () => {
-  beforeAll(async () => {
-    await prisma.user.deleteMany({}).then(() => {
-      exec("yarn seed");
-    });
-  });
+  // beforeAll(async () => {
+  //   await prisma.user.deleteMany({}).then(() => {
+  //     exec("yarn seed");
+  //   }).catch((error)=>{console.log(error)});
+  // });
 
   it('should get users', async () => {
     const authorized = await request(app).post('/auth').send(admin)
-
-    console.log(authorized.body)
     const res = await request(app).get('/users').set('authorization',authorized.body.token);
     expect(res.statusCode).toEqual(200);
   });

@@ -36,17 +36,14 @@ describe('User routes ', () => {
     expect(res.lastname).not.toBe(userToBeUpdated.lastname);
   });
 
-  // it('should create a user', async () => {
-  //   console.log(users)
-  //   const users = await fakeUserRepository.index();
-  //   const lastUser = users[users.length - 1];
-  //   const newUser = await fakeUserRepository.store(user);
-  //   expect(lastUser.id).not.toBe(newUser.id);
-  //   expect(lastUser.email).not.toBe(newUser.email);
-  //   expect(lastUser.phone).not.toBe(newUser.phone);
-  //   const newUsers = await fakeUserRepository.index();
-
-  // });
+  it('should create a user', async () => {
+    const users = await fakeUserRepository.index();
+    const lastUser = users[users.length - 1];
+    const newUser = await fakeUserRepository.store(user);
+    expect(lastUser.id).not.toBe(newUser.id);
+    expect(lastUser.email).not.toBe(newUser.email);
+    expect(lastUser.phone).not.toBe(newUser.phone);
+  });
 
   it('should delete a user', async () => {
     const users = await fakeUserRepository.index();
