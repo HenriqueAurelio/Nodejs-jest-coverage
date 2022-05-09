@@ -3,7 +3,7 @@ const app = require('../../server/server');
 const prisma = require('../../data/prisma');
 const uuid = require('uuid');
 const messages = require('../../constants/messages');
-const customError = require('../../middlewares/customError');
+const { exec } = require("child_process");
 
 const user = {
   id: uuid.v4(),
@@ -16,6 +16,13 @@ const user = {
   status: true,
 };
 
+const admin = {
+  email: "admin@gmail.com",
+  password:"admin"
+}
+
+
+
 describe('Test app server ', () => {
   it('should get main route', async () => {
     const res = await request(app).get('/');
@@ -26,23 +33,34 @@ describe('Test app server ', () => {
 
 describe('User routes ', () => {
   beforeAll(async () => {
-    await prisma.user.deleteMany({});
+    await prisma.user.deleteMany({}).then(() => {
+      exec("yarn seed");
+    });
   });
+
   it('should get users', async () => {
-    const res = await request(app).get('/users');
+    const authorized = await request(app).post('/auth').send(admin)
+
+    console.log(authorized.body)
+    const res = await request(app).get('/users').set('authorization',authorized.body.token);
     expect(res.statusCode).toEqual(200);
   });
 
   it('should create a user', async () => {
-    const res = await request(app).post('/users').send(user);
+    const authorized = await request(app).post('/auth').send(admin)
+
+    const res = await request(app).post('/users').send(user).set('authorization',authorized.body.token);
     expect(res.statusCode).toEqual(201);
   });
 
   it('should find a user', async () => {
-    const users = await request(app).get('/users');
+    const authorized = await request(app).post('/auth').send(admin)
+
+    const users = await request(app).get('/users').set('authorization',authorized.body.token);;
     const userToBeFound =
       users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
-    const res = await request(app).get(`/users/${userToBeFound.id}`);
+    const res = await request(app).get(`/users/${userToBeFound.id}`).set('authorization',authorized.body.token);;
+   
     expect(res.statusCode).toEqual(200);
     expect(res.body.name).toBe(userToBeFound.name);
     expect(res.body.id).toBe(userToBeFound.id);
@@ -52,7 +70,9 @@ describe('User routes ', () => {
   });
 
   it('shouldnt find a user', async () => {
-    const res = await request(app).get(`/users/user_id`);
+    const authorized = await request(app).post('/auth').send(admin)
+
+    const res = await request(app).get(`/users/user_id`).set('authorization',authorized.body.token);;
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
   });

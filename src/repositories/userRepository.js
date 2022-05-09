@@ -16,8 +16,8 @@ class userRepository {
         id: user.authenticationId
       }
     })
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-      return ({user,authentication,token})
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    return ({user,authentication,token})
   }
  
 
