@@ -10,8 +10,8 @@ class loginService {
     if (!data.user || !isValidPassword) {
       throw new customError(messages.wrongCredentials, 404);
     }
-    const {user,token} = data
-      return ({user,token});
+    const { user, token } = data
+    return ({user,token});
   }
 }
 

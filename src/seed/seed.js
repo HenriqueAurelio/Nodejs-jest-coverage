@@ -5,14 +5,15 @@ const users = require('../mock/users')
 
 
 async function databaseSeed() {
-    
+
     await prisma.authentication.deleteMany({});
     await prisma.user.deleteMany({});
 
-    await prisma.authentication.createMany({data:authentications})
+    await prisma.authentication.createMany({data:authentications,})
     await prisma.user.createMany({data:users,})
 }
 
 databaseSeed().catch((error) => {
-    console.error(error); process.exit(1)
+    console.error(error);
+    process.exit(1);
 }).finally(async () => { await prisma.$disconnect() });
