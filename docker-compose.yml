@@ -9,3 +9,10 @@ services:
      volumes:
        - ".:/usr/app"
 
+   db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+        - "3308:1433"
+    working_dir: /usr/app 
+    environment:
+      ACCEPT_EULA: Y
