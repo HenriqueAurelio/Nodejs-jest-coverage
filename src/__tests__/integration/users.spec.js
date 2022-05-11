@@ -54,10 +54,10 @@ describe('User routes ', () => {
   it('should find a user', async () => {
     const authorized = await request(app).post('/auth').send(admin)
 
-    const users = await request(app).get('/users').set('authorization',authorized.body.token);;
+    const users = await request(app).get('/users').set('authorization',authorized.body.token);
     const userToBeFound =
       users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
-    const res = await request(app).get(`/users/${userToBeFound.id}`).set('authorization',authorized.body.token);;
+    const res = await request(app).get(`/users/${userToBeFound.id}`).set('authorization',authorized.body.token);
    
     expect(res.statusCode).toEqual(200);
     expect(res.body.name).toBe(userToBeFound.name);
@@ -67,11 +67,25 @@ describe('User routes ', () => {
     expect(res.body.email).toBe(userToBeFound.email);
   });
 
+  it('should delete a user', async () => {
+    const authorized = await request(app).post('/auth').send(admin)
+    const users = await request(app).get('/users').set('authorization', authorized.body.token);
+    console.log(authorized.body.token)
+    const userToBeDeleted =
+      users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    console.log(userToBeDeleted)
+    const deleteOperation = await request(app).delete('/users').set('authorization',authorized.body.token).send(userToBeDeleted.id)
+   
+    expect(deleteOperation).toBe(200);
+  });
+
+
   it('shouldnt find a user', async () => {
     const authorized = await request(app).post('/auth').send(admin)
 
-    const res = await request(app).get(`/users/user_id`).set('authorization',authorized.body.token);;
+    const res = await request(app).get(`/users/user_id`).set('authorization',authorized.body.token);
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
   });
+
 });

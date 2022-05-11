@@ -7,6 +7,11 @@ class userService {
     return users;
   }
 
+  async indexPaginated(request,response) {
+    const users = await userRepository.indexPaginated(request,response);
+    return users;
+  }
+
   async show(request) {
     const { id } = request.params;
     const user = await userRepository.show(id);

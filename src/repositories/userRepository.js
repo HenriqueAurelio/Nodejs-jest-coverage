@@ -1,6 +1,7 @@
 const prisma = require('../data/prisma');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const res = require('express/lib/response');
 class userRepository {
 
   async authenticate(request) {
@@ -21,9 +22,13 @@ class userRepository {
   }
  
 
-  async index() {
+  async index(request) {
     const users = await prisma.user.findMany();
     return users;
+  }
+
+  async indexPaginated(request,response) {
+    return response.paginatedResults;
   }
 
   async store(request) {

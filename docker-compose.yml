@@ -1,18 +1,18 @@
-version : "3"
+version: '3'
 
 services:
-   app:
-     build: .
-     command: [sh, -c, "cd /usr/app && npx prisma migrate && npm run dev "]
-     ports:
-       - "3000:3000"
-     volumes:
-       - ".:/usr/app"
+  app:
+    build: .
+    command: [sh, -c, 'cd /usr/app && npx prisma migrate && npm run dev ']
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/usr/app'
 
-   db:
+  db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
-        - "3308:1433"
-    working_dir: /usr/app 
+      - '3308:1433'
+    working_dir: /usr/app
     environment:
       ACCEPT_EULA: Y

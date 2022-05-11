@@ -2,8 +2,6 @@ const prisma = require('../data/prisma');
 const authentications = require('../mock/authentications');
 const users = require('../mock/users')
 
-
-
 async function databaseSeed() {
 
     await prisma.authentication.deleteMany({});
