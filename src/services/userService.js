@@ -8,7 +8,7 @@ class userService {
   }
 
   async indexPaginated(request,response) {
-    const users = await userRepository.indexPaginated(request,response);
+    const users = response.paginatedResults
     return users;
   }
 

@@ -16,12 +16,12 @@ router.use(authenticate);
 
 router.get('/users', userController.index);
 
-// router.get('/paginated/users', paginatedResults('User'), userController.indexPaginated);
+router.get('/paginated/users', paginatedResults('user'), userController.indexPaginated);
 
-// router.get('/users/paginated', paginatedResults('User'), userController.indexPaginated);
-// router.get('/usersPaginated', paginatedResults('User'), (req, res) => {
-//   res.json(res.paginatedResults);
-// });
+router.get('/users/paginated', paginatedResults('User'), userController.indexPaginated);
+router.get('/usersPaginated', paginatedResults('User'), (req, res) => {
+  res.json(res.paginatedResults);
+});
 
 router.get('/users/:id', userController.show);
 

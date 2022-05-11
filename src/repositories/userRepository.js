@@ -27,10 +27,6 @@ class userRepository {
     return users;
   }
 
-  async indexPaginated(request,response) {
-    return response.paginatedResults;
-  }
-
   async store(request) {
     const { name, lastname, birth, phone, email, status, password } = request;
     let hashedPassword = bcrypt.hashSync(password,10)
