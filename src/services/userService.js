@@ -49,7 +49,7 @@ class userService {
     
     if (!userToBeDeleted)
     {
-      throw new customError(messages.userDeleteError, 400);
+      throw new customError(messages.userDeleteError, 404);
 
     }
     await userRepository.delete(id);

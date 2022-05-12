@@ -1,9 +1,8 @@
 const request = require('supertest');
 const app = require('../../server/server');
-const prisma = require('../../data/prisma');
 const uuid = require('uuid');
 const messages = require('../../constants/messages');
-const { exec } = require("child_process");
+const seed = require('../../seed/seed')
 
 const user = {
   id: uuid.v4(),
@@ -13,15 +12,13 @@ const user = {
   phone: '3232514364',
   email: 'henriquess@gmail.com',
   password: '12345',
-  status: true,
+  status: true
 };
 
 const admin = {
-  email: "admin@gmail.com",
-  password:"admin"
-}
-
-
+  email: 'admin@gmail.com',
+  password: 'admin'
+};
 
 describe('Test app server ', () => {
   it('should get main route', async () => {
@@ -32,33 +29,47 @@ describe('Test app server ', () => {
 });
 
 describe('User routes ', () => {
-  // beforeAll(async () => {
-  //   await prisma.user.deleteMany({}).then(() => {
-  //     exec("yarn seed");
-  //   }).catch((error)=>{console.log(error)});
-  // });
+  beforeAll(async () => {
+    await seed();
+  });
+
+  
+  it('should authenticate the user', async () => {
+    const authorized = await request(app).post('/auth').send(admin);
+    expect(authorized.statusCode).toEqual(200);
+    expect(authorized.body.message).toBe(messages.rightCredentials);
+  });
 
   it('should get users', async () => {
-    const authorized = await request(app).post('/auth').send(admin)
-    const res = await request(app).get('/users').set('authorization',authorized.body.token);
+    const authorized = await request(app).post('/auth').send(admin);
+    const res = await request(app)
+      .get('/users')
+      .set('authorization', authorized.body.token);
     expect(res.statusCode).toEqual(200);
   });
 
   it('should create a user', async () => {
-    const authorized = await request(app).post('/auth').send(admin)
+    const authorized = await request(app).post('/auth').send(admin);
 
-    const res = await request(app).post('/users').send(user).set('authorization',authorized.body.token);
+    const res = await request(app)
+      .post('/users')
+      .send(user)
+      .set('authorization', authorized.body.token);
     expect(res.statusCode).toEqual(201);
   });
 
   it('should find a user', async () => {
-    const authorized = await request(app).post('/auth').send(admin)
+    const authorized = await request(app).post('/auth').send(admin);
 
-    const users = await request(app).get('/users').set('authorization',authorized.body.token);
+    const users = await request(app)
+      .get('/users')
+      .set('authorization', authorized.body.token);
     const userToBeFound =
       users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
-    const res = await request(app).get(`/users/${userToBeFound.id}`).set('authorization',authorized.body.token);
-   
+    const res = await request(app)
+      .get(`/users/${userToBeFound.id}`)
+      .set('authorization', authorized.body.token);
+
     expect(res.statusCode).toEqual(200);
     expect(res.body.name).toBe(userToBeFound.name);
     expect(res.body.id).toBe(userToBeFound.id);
@@ -68,24 +79,58 @@ describe('User routes ', () => {
   });
 
   it('should delete a user', async () => {
-    const authorized = await request(app).post('/auth').send(admin)
-    const users = await request(app).get('/users').set('authorization', authorized.body.token);
-    console.log(authorized.body.token)
-    const userToBeDeleted =
-      users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
-    console.log(userToBeDeleted)
-    const deleteOperation = await request(app).delete('/users').set('authorization',authorized.body.token).send(userToBeDeleted.id)
-   
-    expect(deleteOperation).toBe(200);
+    const { body } = await request(app).post('/auth').send(admin);
+    const { token } = body;
+    const { body: users } = await request(app)
+      .get('/users')
+      .set('authorization', token);
+    const { id } = users[Math.floor(Math.random() * (users.length - 1)) + 0];
+    const deleteOperation = await request(app)
+      .delete(`/users/${id}`)
+      .set('authorization', token);
+    expect(deleteOperation.statusCode).toBe(200);
   });
+
+
+
+  it.only('shouldnt authenticate the user', async () => {
+    const { body } = await request(app).post('/auth').send(admin);
+    const { token } = body;
+    const { body: users } = await request(app)
+      .get('/users')
+      .set('authorization', token);
+    const { id } = users[Math.floor(Math.random() * (users.length - 1)) + 0];
+    const deleteOperation = await request(app)
+      .delete(`/users/${id}`)
+      .set('authorization', "wrogntoken");
+      expect(deleteOperation.statusCode).toEqual(401);
+      expect(deleteOperation.body.message).toBe(messages.notAuthorized);
+    });
+
 
 
   it('shouldnt find a user', async () => {
-    const authorized = await request(app).post('/auth').send(admin)
+    const authorized = await request(app).post('/auth').send(admin);
 
-    const res = await request(app).get(`/users/user_id`).set('authorization',authorized.body.token);
+    const res = await request(app)
+      .get(`/users/user_id`)
+      .set('authorization', authorized.body.token);
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
   });
+
+  it('shouldnt delete a user', async () => {
+    const { body } = await request(app).post('/auth').send(admin);
+    const { token } = body;
+    const { body: users } = await request(app)
+      .get('/users')
+      .set('authorization', token);
+    const deleteOperation = await request(app)
+      .delete(`/users/id`)
+      .set('authorization', token);
+    expect(deleteOperation.statusCode).toBe(404);
+  });
+
+  
 
 });
