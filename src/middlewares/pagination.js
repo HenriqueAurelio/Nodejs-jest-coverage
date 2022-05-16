@@ -28,7 +28,6 @@ function paginatedResults(model) {
       });
 
       res.paginatedResults = results;
-      next();
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
