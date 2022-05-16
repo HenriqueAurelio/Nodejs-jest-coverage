@@ -1,15 +1,15 @@
-version: '3'
+version: '3.3'
 
 services:
   db:
-    container_name: db2
+    container_name: db
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
       - '3308:1433'
     working_dir: /usr/app
     environment:
       ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: 1q2w3e4r@#$
+      SA_PASSWORD: Devworld1231@!
   app:
     container_name: nodejs
     build: .
