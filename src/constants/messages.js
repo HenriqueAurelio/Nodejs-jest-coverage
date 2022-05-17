@@ -9,6 +9,7 @@ const messages = {
   wrongCredentials: 'Credenciais erradas',
   rightCredentials: 'Logado com sucesso',
   notAuthorized: 'Não autorizado',
+  badRequest: 'Paramêtros incorretos'
 };
 
 module.exports = messages;

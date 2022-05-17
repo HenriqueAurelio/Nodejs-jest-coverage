@@ -1,4 +1,6 @@
 const prisma = require('../data/prisma');
+const messages = require('../constants/messages');
+const customError = require('../middlewares/customError');
 
 function paginatedResults(model) {
   return async (req, res, next) => {
@@ -29,7 +31,7 @@ function paginatedResults(model) {
 
       res.paginatedResults = results;
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      throw new customError(messages.badRequest, 400);
     }
 
     next();

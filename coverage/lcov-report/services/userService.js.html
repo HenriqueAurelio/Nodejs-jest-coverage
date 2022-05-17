@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">96.87% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/30</span>
+                <span class='fraction'>31/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/12</span>
+                <span class='fraction'>12/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">96.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/27</span>
+                <span class='fraction'>27/28</span>
             </div>
         
             
@@ -121,14 +121,13 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -146,7 +145,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,17 +153,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,9 +172,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,15 +181,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const userRepository = require('../repositories/userRepository');
 const customError = require('../middlewares/customError');
-const messages = require('../constants/messages')
+const messages = require('../constants/messages');
 class userService {
   async index() {
     const users = await userRepository.index();
     return users;
   }
 &nbsp;
-  async indexPaginated(request,response) {
-    const users = response.paginatedResults
+  async indexPaginated(request, response) {
+    const users = response.paginatedResults;
     return users;
   }
 &nbsp;
@@ -214,26 +212,25 @@ class userService {
 &nbsp;
   async update(request) {
     const { id } = request.params;
-    const userEmailInUse = await userRepository.findByEmail(request.body.email);
 &nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (userEmailInUse &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >userEmailInUse.id !== id)</span>
-<span class="cstat-no" title="statement not covered" >      throw new customError(messages.userEmailInUse, 400);</span>
+    const userExists = await userRepository.findById(id);
+    if (!userExists) throw new customError(messages.userIdInvalid, 404);
+&nbsp;
+    const userEmailInUse = await userRepository.findByEmail(request.body.email);
+    if (userEmailInUse &amp;&amp; userEmailInUse.id !== id)
+      throw new customError(messages.userEmailInUse, 400);
 &nbsp;
     const user = await userRepository.update(id, request.body);
 &nbsp;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (user) return user;
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    throw new customError(messages.userIdInvalid, 404);</span>
   }
-  
+&nbsp;
   async delete(request) {
     const { id } = request.params;
     const userToBeDeleted = await userRepository.findById(id);
-    
-    if (!userToBeDeleted)
-    {
-      throw new customError(messages.userDeleteError, 404);
 &nbsp;
+    if (!userToBeDeleted) {
+      throw new customError(messages.userDeleteError, 404);
     }
     await userRepository.delete(id);
   }
@@ -247,7 +244,7 @@ module.exports = new userService();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue May 17 2022 11:48:01 GMT-0300 (Brasilia Standard Time)
+                at Tue May 17 2022 14:16:05 GMT-0300 (Brasilia Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

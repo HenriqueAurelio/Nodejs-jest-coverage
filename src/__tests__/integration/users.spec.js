@@ -1,38 +1,14 @@
 const request = require('supertest');
 const app = require('../../server/server');
-const uuid = require('uuid');
 const messages = require('../../constants/messages');
 const seed = require('../../seed/seed');
-
-const user = {
-  id: uuid.v4(),
-  name: 'Henrique',
-  lastname: 'Silva',
-  birth: new Date(),
-  phone: '3232514364',
-  email: 'henriquess@gmail.com',
-  password: '12345',
-  status: true
-};
-
-const updateUser = {
-  name: 'Usuario Atualizado',
-  lastname: 'Usuario Atualizado',
-  birth: new Date(),
-  phone: '32325143642',
-  email: 'Usuario Atualizado@gmail.com',
-  password: '123456',
-  status: false
-};
-
-const admin = {
-  email: 'admin@gmail.com',
-  password: 'admin'
-};
-const wrongUser = {
-  email: 'admin@gmails.com',
-  password: 'admin'
-};
+const {
+  user,
+  updateUser,
+  admin,
+  wrongUser,
+  wrongPassword
+} = require('../../mock/integrationData');
 
 describe('Test app server ', () => {
   it('should get main route', async () => {
@@ -124,8 +100,7 @@ describe('User routes ', () => {
       .set('authorization', token);
     var userToBeDeleted = users[Math.floor(Math.random() * (users.length - 1)) + 0];
     while (userToBeDeleted.email == 'admin@gmail.com') {
-      userToBeDeleted =
-        users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+      userToBeDeleted = users[Math.floor(Math.random() * (users.length - 1)) + 0];
     }
     const deleteOperation = await request(app)
       .delete(`/users/${userToBeDeleted.id}`)
@@ -142,10 +117,38 @@ describe('User routes ', () => {
     expect(paginatedOperation.statusCode).toBe(200);
   });
 
-  it('shouldnt authenticate the user', async () => {
+  it('shouldnt return paginated users', async () => {
+    const { body } = await request(app).post('/auth').send(admin);
+    const { token } = body;
+    const paginatedOperation = await request(app)
+      .get(`/paginated/users?page=2&limitss=1`)
+      .set('authorization', token);
+    expect(paginatedOperation.statusCode).toBe(400);
+    expect(paginatedOperation.body.message).toBe(messages.badRequest);
+  });
+
+  it('shouldnt authenticate the user with wrong email', async () => {
     const res = await request(app).post('/auth').send(wrongUser);
     expect(res.statusCode).toEqual(404);
     expect(res.body.message).toBe(messages.wrongCredentials);
+  });
+
+  it('shouldnt authenticate the user with wrong password', async () => {
+    const res = await request(app).post('/auth').send(wrongPassword);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.message).toBe(messages.wrongCredentials);
+  });
+
+  it('shouldnt get users with wrong token', async () => {
+    const res = await request(app)
+      .get('/users')
+      .set('authorization', 'dsahdusahudsahudsa');
+    expect(res.statusCode).toEqual(401);
+  });
+
+  it('shouldnt get users without token', async () => {
+    const res = await request(app).get('/users');
+    expect(res.statusCode).toEqual(401);
   });
 
   it('shouldnt delete a user', async () => {
@@ -165,5 +168,58 @@ describe('User routes ', () => {
       .set('authorization', authorized.body.token);
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
+  });
+
+  it('shouldnt update a user', async () => {
+    const authorized = await request(app).post('/auth').send(admin);
+
+    const users = await request(app)
+      .get('/users')
+      .set('authorization', authorized.body.token);
+    var userToBeFound =
+      users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+
+    while (userToBeFound.email == 'admin@gmail.com') {
+      userToBeFound =
+        users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    }
+
+    updateUser.email = 'admin@gmail.com';
+    const res = await request(app)
+      .put(`/users/${userToBeFound.id}`)
+      .set('authorization', authorized.body.token)
+      .send(updateUser);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toBe(messages.userEmailInUse);
+  });
+
+  it('shouldnt update a user with wrong id', async () => {
+    const authorized = await request(app).post('/auth').send(admin);
+
+    const users = await request(app)
+      .get('/users')
+      .set('authorization', authorized.body.token);
+    var userToBeFound =
+      users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    userToBeFound.id = 'wrongId';
+    const res = await request(app)
+      .put(`/users/${userToBeFound}`)
+      .set('authorization', authorized.body.token)
+      .send(updateUser);
+
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.message).toBe(messages.userIdInvalid);
+  });
+
+  it('shouldnt create a user', async () => {
+    const authorized = await request(app).post('/auth').send(admin);
+    delete user.phone;
+    console.log(user);
+    const res = await request(app)
+      .post('/users')
+      .send(user)
+      .set('authorization', authorized.body.token);
+    expect(res.statusCode).toEqual(500);
   });
 });

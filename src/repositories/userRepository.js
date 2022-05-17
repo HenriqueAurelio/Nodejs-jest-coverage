@@ -2,33 +2,12 @@ const prisma = require('../data/prisma');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 class userRepository {
-  async authenticate(request) {
-    const { email, password } = request;
-    const user = await prisma.user.findUnique({
-      where: {
-        email
-      }
-    });
-    
-    const authentication = await prisma.authentication.findUnique({
-      where: {
-        id: user?.authenticationId
-      }
-    });
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1d'
-    });
-    return { user, authentication, token };
-  }
- 
-  async generateJWTToken(id)
-  {
+  async generateJWTToken(id) {
     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: '1d'
     });
     return token;
-}
+  }
   async index(request) {
     const users = await prisma.user.findMany();
     return users;
@@ -100,7 +79,6 @@ class userRepository {
   async delete(id) {
     await prisma.user.delete({ where: { id } });
   }
-
 }
 
 module.exports = new userRepository();

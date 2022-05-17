@@ -1,14 +1,14 @@
 const userRepository = require('../repositories/userRepository');
 const customError = require('../middlewares/customError');
-const messages = require('../constants/messages')
+const messages = require('../constants/messages');
 class userService {
   async index() {
     const users = await userRepository.index();
     return users;
   }
 
-  async indexPaginated(request,response) {
-    const users = response.paginatedResults
+  async indexPaginated(request, response) {
+    const users = response.paginatedResults;
     return users;
   }
 
@@ -31,26 +31,25 @@ class userService {
 
   async update(request) {
     const { id } = request.params;
-    const userEmailInUse = await userRepository.findByEmail(request.body.email);
 
+    const userExists = await userRepository.findById(id);
+    if (!userExists) throw new customError(messages.userIdInvalid, 404);
+
+    const userEmailInUse = await userRepository.findByEmail(request.body.email);
     if (userEmailInUse && userEmailInUse.id !== id)
       throw new customError(messages.userEmailInUse, 400);
 
     const user = await userRepository.update(id, request.body);
 
     if (user) return user;
-
-    throw new customError(messages.userIdInvalid, 404);
   }
-  
+
   async delete(request) {
     const { id } = request.params;
     const userToBeDeleted = await userRepository.findById(id);
-    
-    if (!userToBeDeleted)
-    {
-      throw new customError(messages.userDeleteError, 404);
 
+    if (!userToBeDeleted) {
+      throw new customError(messages.userDeleteError, 404);
     }
     await userRepository.delete(id);
   }
