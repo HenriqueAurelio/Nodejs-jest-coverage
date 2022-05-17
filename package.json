@@ -8,7 +8,8 @@
     "dev": "nodemon app.js",
     "test": "jest",
     "seed": "node src/seed/seed.js",
-    "db:migrate": "yarn prisma migrate dev --preview-feature"
+    "db:migrate": "yarn prisma migrate dev --preview-feature",
+    "test-coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",

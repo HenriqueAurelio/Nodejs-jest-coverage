@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../../server/server');
 const uuid = require('uuid');
 const messages = require('../../constants/messages');
-const seed = require('../../seed/seed')
+const seed = require('../../seed/seed');
 
 const user = {
   id: uuid.v4(),
@@ -15,8 +15,22 @@ const user = {
   status: true
 };
 
+const updateUser = {
+  name: 'Usuario Atualizado',
+  lastname: 'Usuario Atualizado',
+  birth: new Date(),
+  phone: '32325143642',
+  email: 'Usuario Atualizado@gmail.com',
+  password: '123456',
+  status: false
+};
+
 const admin = {
   email: 'admin@gmail.com',
+  password: 'admin'
+};
+const wrongUser = {
+  email: 'admin@gmails.com',
   password: 'admin'
 };
 
@@ -33,7 +47,6 @@ describe('User routes ', () => {
     await seed();
   });
 
-  
   it('should authenticate the user', async () => {
     const authorized = await request(app).post('/auth').send(admin);
     expect(authorized.statusCode).toEqual(200);
@@ -78,36 +91,71 @@ describe('User routes ', () => {
     expect(res.body.email).toBe(userToBeFound.email);
   });
 
+  it('should update a user', async () => {
+    const authorized = await request(app).post('/auth').send(admin);
+
+    const users = await request(app)
+      .get('/users')
+      .set('authorization', authorized.body.token);
+    var userToBeFound =
+      users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    while (userToBeFound.email == 'admin@gmail.com') {
+      userToBeFound =
+        users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    }
+    const res = await request(app)
+      .put(`/users/${userToBeFound.id}`)
+      .set('authorization', authorized.body.token)
+      .send(updateUser);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.name).not.toBe(userToBeFound.name);
+    expect(res.body.id).not.toBe(userToBeFound.id);
+    expect(res.body.lastname).not.toBe(userToBeFound.lastname);
+    expect(res.body.phone).not.toBe(userToBeFound.phone);
+    expect(res.body.email).not.toBe(userToBeFound.email);
+  });
+
   it('should delete a user', async () => {
     const { body } = await request(app).post('/auth').send(admin);
     const { token } = body;
     const { body: users } = await request(app)
       .get('/users')
       .set('authorization', token);
-    const { id } = users[Math.floor(Math.random() * (users.length - 1)) + 0];
+    var userToBeDeleted = users[Math.floor(Math.random() * (users.length - 1)) + 0];
+    while (userToBeDeleted.email == 'admin@gmail.com') {
+      userToBeDeleted =
+        users.body[Math.floor(Math.random() * (users.body.length - 1)) + 0];
+    }
     const deleteOperation = await request(app)
-      .delete(`/users/${id}`)
+      .delete(`/users/${userToBeDeleted.id}`)
       .set('authorization', token);
     expect(deleteOperation.statusCode).toBe(200);
   });
 
-
-
-  it.only('shouldnt authenticate the user', async () => {
+  it('should return paginated users', async () => {
     const { body } = await request(app).post('/auth').send(admin);
     const { token } = body;
-    const { body: users } = await request(app)
-      .get('/users')
+    const paginatedOperation = await request(app)
+      .get(`/paginated/users?page=2&limit=1`)
       .set('authorization', token);
-    const { id } = users[Math.floor(Math.random() * (users.length - 1)) + 0];
+    expect(paginatedOperation.statusCode).toBe(200);
+  });
+
+  it('shouldnt authenticate the user', async () => {
+    const res = await request(app).post('/auth').send(wrongUser);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.message).toBe(messages.wrongCredentials);
+  });
+
+  it('shouldnt delete a user', async () => {
+    const { body } = await request(app).post('/auth').send(admin);
+    const { token } = body;
     const deleteOperation = await request(app)
-      .delete(`/users/${id}`)
-      .set('authorization', "wrogntoken");
-      expect(deleteOperation.statusCode).toEqual(401);
-      expect(deleteOperation.body.message).toBe(messages.notAuthorized);
-    });
-
-
+      .delete(`/users/id`)
+      .set('authorization', token);
+    expect(deleteOperation.statusCode).toBe(404);
+  });
 
   it('shouldnt find a user', async () => {
     const authorized = await request(app).post('/auth').send(admin);
@@ -118,19 +166,4 @@ describe('User routes ', () => {
     expect(res.statusCode).toBe(404);
     expect(res.body.message).toBe(messages.userIdInvalid);
   });
-
-  it('shouldnt delete a user', async () => {
-    const { body } = await request(app).post('/auth').send(admin);
-    const { token } = body;
-    const { body: users } = await request(app)
-      .get('/users')
-      .set('authorization', token);
-    const deleteOperation = await request(app)
-      .delete(`/users/id`)
-      .set('authorization', token);
-    expect(deleteOperation.statusCode).toBe(404);
-  });
-
-  
-
 });

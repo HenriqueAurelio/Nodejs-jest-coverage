@@ -5,7 +5,7 @@ const user = {
   lastname: 'userUpdated',
   email: 'userUpdated@gmail.com',
   birth: '1970-01-01T00:00:00.000Z',
-  phone: Math.floor(Math.random() * 9999999999) + 1111111111,
+  phone: Math.floor(Math.random() * 9999999999) + 1111111111
 };
 
 describe('User routes ', () => {
@@ -48,9 +48,9 @@ describe('User routes ', () => {
   it('should delete a user', async () => {
     const users = await fakeUserRepository.index();
     const userToBeDeleted = users[0];
-    const res = await fakeUserRepository.delete(userToBeDeleted.id);
+    const deleteOperation = await fakeUserRepository.delete(userToBeDeleted.id);
     const user = await fakeUserRepository.findById(userToBeDeleted.id);
     expect(user).toBeUndefined();
+    expect(deleteOperation.length < users.length);
   });
-  
 });
