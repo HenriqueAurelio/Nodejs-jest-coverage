@@ -8,9 +8,3 @@
 
 ## Para rodar o script de teste e ver o coverage yarn test-coverage e para testes unitarios yarn test
 
-  "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "jest",
-    "seed": "node src/seed/seed.js",
-    "db:migrate": "yarn prisma migrate dev --preview-feature",
-    "test-coverage": "jest --coverage"
